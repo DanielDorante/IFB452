@@ -108,7 +108,7 @@ a:hover {
 }
 
 .nav-button {
-  background-color: #2a9d8f;       /* Teal-ish button color */
+  background-color: #027125;       /* Teal-ish button color */
   color: white;
   padding: 12px 24px;
   text-decoration: none;
@@ -122,7 +122,7 @@ a:hover {
 }
 
 .nav-button:hover {
-  background-color: #21867a;
+  background-color: #047836;
   transform: translateY(-2px);
   box-shadow: 0 5px 12px rgba(0,0,0,0.2);
 }
@@ -139,7 +139,7 @@ a:hover {
 .dashboard-info h2 {
   font-size: 2.5rem;
   margin-bottom: 15px;
-  color: #2a9d8f;
+  color: #0b9751;
   text-align: center;
 }
 
@@ -274,7 +274,7 @@ form#environmental-form small {
 }
 
 .submit-button:hover {
-  background-color: #005f9e; /* a darker shade */
+  background-color: #057042; /* a darker shade */
 }
 
 .reset-button {
@@ -437,7 +437,7 @@ form#environmental-form small {
 }
 
 .token-link {
-  color: #007BFF;
+  color: #03861d;
   text-decoration: none;
 }
 
@@ -826,7 +826,7 @@ textarea {
 }
 
 .nav-button {
-    background: linear-gradient(135deg, #2196F3, #1976D2);
+    background: linear-gradient(135deg, #068b1e, #068b1e);
     color: white;
     text-decoration: none;
     padding: 12px 24px;
@@ -839,7 +839,7 @@ textarea {
 }
 
 .nav-button:hover {
-    background: linear-gradient(135deg, #1976D2, #2196F3);
+    background: linear-gradient(135deg, #036515, #036515);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
     text-decoration: none;

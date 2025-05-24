@@ -17,31 +17,16 @@
             <h2>Check Scores & View Submissions</h2>
             <p>Check company environmental impact scores and view submission details</p>
         </div>
-        
-        <h1>CarbonChain - Environmental Impact Tracker</h1>
-
-        <div class="wallet-status">
+       
+		
+		<div class="wallet-status">
             <div id="walletAddress">Not Connected</div>
             <div id="networkInfo" style="margin-top: 10px; font-size: 14px;"></div>
             <button id="connectWallet">Connect Wallet</button>
             <button id="checkContract" style="margin-left: 10px;">Verify Contract</button>
         </div>
         
-        <!-- Check Score Section -->
-        <div id="checkScore">
-            <h2>Check Company Impact Score</h2>
-            <div class="section">
-                <div class="form-group">
-                    <label for="companyAddressInput">Company Ethereum Address:</label>
-                    <input type="text" id="companyAddressInput" placeholder="0x..." required>
-                </div>
-                <button onclick="getCompanyScore()">Check Score</button>
-                <div id="scoreResult" class="result">
-                    Impact Score: <span id="scoreValue"></span>
-                </div>
-            </div>
-        </div>
-        
+
         <!-- View Submission Section -->
         <div id="viewSubmission">
             <h2>View Environmental Action Submission</h2>
@@ -61,10 +46,24 @@
             </div>
         </div>
 
+
+        <!-- Check Score Section -->
+        <div id="checkScore">
+            <h2>Check Company Impact Score</h2>
+            <div class="section">
+                <div class="form-group">
+                    <label for="companyAddressInput">Company Ethereum Address:</label>
+                    <input type="text" id="companyAddressInput" placeholder="0x..." required>
+                </div>
+                <button onclick="getCompanyScore()">Check Score</button>
+                <div id="scoreResult" class="result">
+                    Impact Score: <span id="scoreValue"></span>
+                </div>
+            </div>
+        </div>
+        
         <div class="button-container">
             <a href="../index.html" class="nav-button">Back to Dashboard</a>
-            <a href="senddata.html" class="nav-button">Submit Datas</a>
-            <a href="validatedata.html" class="nav-button">Validate Actions</a>
           
         </div>
     </div>
@@ -417,7 +416,38 @@
             element.className = `result ${type}`;
             element.style.display = 'block';
         }
+
+        // View Submission
+        async function viewSubmission() {
+            if (!carbonChainContract) {
+                showResult('viewSubmissionResult', 'Please connect your wallet first', 'error');
+                return;
+            }
+            
+            const submissionId = document.getElementById('viewSubmissionId').value;
+            if (!submissionId) {
+                showResult('viewSubmissionResult', 'Please enter a submission ID', 'error');
+                return;
+            }
+            
+            try {
+                const submission = await carbonChainContract.methods.viewSubmission(submissionId).call();
+                
+                document.getElementById('viewCompany').textContent = submission.company;
+                document.getElementById('viewData').textContent = submission.data;
+                document.getElementById('viewImpact').textContent = submission.impactValue;
+                document.getElementById('viewImpact').className = submission.impactValue >= 0 ? 'positive' : 'negative';
+                document.getElementById('viewValidated').textContent = submission.validated ? "Validated" : "Pending Validation";
+                document.getElementById('viewSubmissionResult').className = 'result success';
+                document.getElementById('viewSubmissionResult').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error viewing submission:', error);
+                showResult('viewSubmissionResult', `Error: ${error.message}`, 'error');
+            }
+        }
         
+
         // Get Company Score
         async function getCompanyScore() {
             if (!carbonChainContract) {
@@ -450,35 +480,6 @@
             }
         }
         
-        // View Submission
-        async function viewSubmission() {
-            if (!carbonChainContract) {
-                showResult('viewSubmissionResult', 'Please connect your wallet first', 'error');
-                return;
-            }
-            
-            const submissionId = document.getElementById('viewSubmissionId').value;
-            if (!submissionId) {
-                showResult('viewSubmissionResult', 'Please enter a submission ID', 'error');
-                return;
-            }
-            
-            try {
-                const submission = await carbonChainContract.methods.viewSubmission(submissionId).call();
-                
-                document.getElementById('viewCompany').textContent = submission.company;
-                document.getElementById('viewData').textContent = submission.data;
-                document.getElementById('viewImpact').textContent = submission.impactValue;
-                document.getElementById('viewImpact').className = submission.impactValue >= 0 ? 'positive' : 'negative';
-                document.getElementById('viewValidated').textContent = submission.validated ? "Validated" : "Pending Validation";
-                document.getElementById('viewSubmissionResult').className = 'result success';
-                document.getElementById('viewSubmissionResult').style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error viewing submission:', error);
-                showResult('viewSubmissionResult', `Error: ${error.message}`, 'error');
-            }
-        }
         
         // Initialize when page loads
         window.onload = async function() {
