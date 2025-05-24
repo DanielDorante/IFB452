@@ -31,13 +31,13 @@ IFB452
 
 **Complie and deploy smart contract**
 
-2. Open Remix IDE in browser such as Chrome.
-3. Open the main.sol file in Remix IDE.
-4. Compile the main.sol contract.
-5. In the Delpy and run transactions tab, select Injected Provider as the environment to connect Remix with MetaMask.
-6. Connect your MetaMask wallet when prompted.
-7. Deploy the contract.
-8. Copy the deployed contract's address and ABI, and paste it into the appropriate sections of your HTML files.
+1. Open Remix IDE in browser such as Chrome.
+2. Open the main.sol file in Remix IDE.
+3. Compile the main.sol contract.
+4. In the Delpy and run transactions tab, select Injected Provider as the environment to connect Remix with MetaMask.
+5. Connect your MetaMask wallet when prompted.
+6. Deploy the contract.
+7. Copy the deployed contract's address and ABI, and paste it into the appropriate sections of your HTML files.
   
 **Run the local web Server**
 
