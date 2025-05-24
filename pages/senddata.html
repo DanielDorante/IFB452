@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Environmental Data - CarbonChain</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div id="header">
+        <h1>CarbonChain</h1>
+        <p>Blockchain-based Environmental Accountability Platform</p>
+    </div>
+    
+    <div id="content">
+        <div class="page-header">
+            <h2>Submit Environmental Data</h2>
+            <p>Use this form to submit your company's environmental actions for verification</p>
+        </div>
+
+        <div class="wallet-status">
+            <div id="walletAddress">Not Connected</div>
+            <div id="networkInfo" style="margin-top: 10px; font-size: 14px;"></div>
+            <button id="connectWallet">Connect Wallet</button>
+            <button id="checkContract" style="margin-left: 10px;">Verify Contract</button>
+        </div>
+    
+        <!-- Submit Action Section -->
+        <div id="submitAction">
+            <h2>Submit Environmental Action</h2>
+            <div class="section">
+                <div class="form-group">
+                    <label for="actionData">Environmental Action Details:</label>
+                    <textarea id="actionData" rows="5" required placeholder="Describe your environmental action (e.g., 'Installed 100 solar panels reducing CO2 by 50 tons annually')"></textarea>
+                </div>
+                <button onclick="submitEnvironmentalAction()" id="submitBtn">Submit Action</button>
+                <div id="submitResult" class="result"></div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <a href="../index.html" class="nav-button">Back to Dashboard</a>
+            <a href="validatedata.html" class="nav-button">Validate Actions</a>
+            <a href="/pages/viewdata.html" class="nav-button">View Scores and Submissions</a>
+        </div>
+    </div>
+    
+    <div id="footer">
+        <p>&copy; 2025 CarbonChain - Creating Environmental Accountability Through Blockchain</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.6/dist/web3.min.js"></script>
+    <script>
+        // Web3 and contract variables
+        let web3;
+        let carbonChainContract;
+        let userAccount;
+        
+        const contractABI = [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "company",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "int256",
+				"name": "newScore",
+				"type": "int256"
+			}
+		],
+		"name": "ScoreUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "company",
+				"type": "address"
+			}
+		],
+		"name": "SubmissionCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "valid",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"internalType": "int256",
+				"name": "impactValue",
+				"type": "int256"
+			}
+		],
+		"name": "SubmissionValidated",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_data",
+				"type": "string"
+			}
+		],
+		"name": "submitEnvironmentalAction",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "int256",
+				"name": "_impactValue",
+				"type": "int256"
+			}
+		],
+		"name": "validateAction",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_company",
+				"type": "address"
+			}
+		],
+		"name": "getCompanyScore",
+		"outputs": [
+			{
+				"internalType": "int256",
+				"name": "",
+				"type": "int256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "impactTokens",
+		"outputs": [
+			{
+				"internalType": "int256",
+				"name": "score",
+				"type": "int256"
+			},
+			{
+				"internalType": "bool",
+				"name": "exists",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "submissionCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "submissions",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "company",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "data",
+				"type": "string"
+			},
+			{
+				"internalType": "int256",
+				"name": "impactValue",
+				"type": "int256"
+			},
+			{
+				"internalType": "bool",
+				"name": "validated",
+				"type": "bool"
+			},
+			{
+				"internalType": "bool",
+				"name": "exists",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_id",
+				"type": "uint256"
+			}
+		],
+		"name": "viewSubmission",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "company",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "data",
+				"type": "string"
+			},
+			{
+				"internalType": "int256",
+				"name": "impactValue",
+				"type": "int256"
+			},
+			{
+				"internalType": "bool",
+				"name": "validated",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+        
+        // IMPORTANT: Update this with your correct contract address
+        const contractAddress = '0x480b3804baCBE4E8CC184a02a0fAf91f2dbC2a66';
+        
+        // Initialize Web3 and connect to wallet
+        async function initWeb3() {
+            if (window.ethereum) {
+                try {
+                    web3 = new Web3(window.ethereum);
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    
+                    // Get accounts
+                    const accounts = await web3.eth.getAccounts();
+                    userAccount = accounts[0];
+                    
+                    // Display wallet info
+                    document.getElementById('walletAddress').textContent = 
+                        `Connected: ${userAccount.substring(0, 6)}...${userAccount.substring(38)}`;
+                    
+                    // Get network info
+                    const networkId = await web3.eth.net.getId();
+                    const networkNames = {
+                        1: 'Ethereum Mainnet',
+                        3: 'Ropsten',
+                        4: 'Rinkeby',
+                        5: 'Goerli',
+                        11155111: 'Sepolia',
+                        137: 'Polygon',
+                        80001: 'Mumbai',
+                        56: 'BSC Mainnet'
+                    };
+                    document.getElementById('networkInfo').textContent = 
+                        `Network: ${networkNames[networkId] || `ID: ${networkId}`}`;
+                    
+                    // Set up contract instance
+                    carbonChainContract = new web3.eth.Contract(contractABI, contractAddress);
+                    
+                    console.log('Web3 initialized successfully');
+                    return true;
+                } catch (error) {
+                    console.error('Failed to initialize Web3:', error);
+                    showResult('submitResult', `Failed to connect: ${error.message}`, 'error');
+                    return false;
+                }
+            } else {
+                showResult('submitResult', 'Please install MetaMask or another Web3 wallet', 'error');
+                return false;
+            }
+        }
+        
+        // Check if contract exists at address
+        async function checkContractExists() {
+            if (!web3) {
+                showResult('submitResult', 'Please connect wallet first', 'error');
+                return false;
+            }
+            
+            try {
+                const code = await web3.eth.getCode(contractAddress);
+                if (code === '0x' || code === '0x0') {
+                    showResult('submitResult', 
+                        `No contract found at ${contractAddress}. Please verify the contract address and network.`, 
+                        'error');
+                    return false;
+                } else {
+                    showResult('submitResult', 
+                        `✅ Contract verified at ${contractAddress}`, 
+                        'success');
+                    return true;
+                }
+            } catch (error) {
+                showResult('submitResult', `Error checking contract: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        // Connect wallet button handler
+        document.getElementById('connectWallet').addEventListener('click', async function() {
+            const connected = await initWeb3();
+            if (connected) {
+                showResult('submitResult', 'Wallet connected successfully!', 'success');
+            }
+        });
+        
+        // Check contract button handler
+        document.getElementById('checkContract').addEventListener('click', checkContractExists);
+        
+        // Show result helper function
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = message;
+            element.className = `result ${type}`;
+            element.style.display = 'block';
+        }
+        
+        // Submit Environmental Action
+        async function submitEnvironmentalAction() {
+            if (!carbonChainContract) {
+                showResult('submitResult', 'Please connect your wallet first', 'error');
+                return;
+            }
+            
+            const actionData = document.getElementById('actionData').value.trim();
+            if (!actionData) {
+                showResult('submitResult', 'Please enter action details', 'error');
+                return;
+            }
+            
+            // Verify contract exists before attempting transaction
+            const contractExists = await checkContractExists();
+            if (!contractExists) {
+                return;
+            }
+            
+            try {
+                // Disable submit button to prevent double submission
+                document.getElementById('submitBtn').disabled = true;
+                showResult('submitResult', 'Submitting action... Please confirm in your wallet.', 'warning');
+                
+                // Estimate gas first
+                const gasEstimate = await carbonChainContract.methods
+                    .submitEnvironmentalAction(actionData)
+                    .estimateGas({ from: userAccount });
+                
+                // Send transaction with estimated gas + buffer
+                const tx = await carbonChainContract.methods
+                    .submitEnvironmentalAction(actionData)
+                    .send({ 
+                        from: userAccount,
+                        gas: Math.floor(gasEstimate * 1.2) // Add 20% buffer
+                    });
+                
+                showResult('submitResult', 
+                    `✅ Action submitted successfully!<br>Transaction: ${tx.transactionHash}`, 
+                    'success');
+                document.getElementById('actionData').value = '';
+                
+            } catch (error) {
+                console.error('Error submitting action:', error);
+                let errorMessage = 'Unknown error occurred';
+                
+                if (error.message.includes('User denied')) {
+                    errorMessage = 'Transaction was cancelled by user';
+                } else if (error.message.includes('insufficient funds')) {
+                    errorMessage = 'Insufficient funds for gas fees';
+                } else if (error.message.includes('execution reverted')) {
+                    errorMessage = 'Transaction failed - contract rejected the transaction';
+                } else if (error.message.includes('internal account')) {
+                    errorMessage = 'Contract not found at this address. Please verify the contract address and network.';
+                } else {
+                    errorMessage = error.message;
+                }
+                
+                showResult('submitResult', `❌ Error: ${errorMessage}`, 'error');
+            } finally {
+                // Re-enable submit button
+                document.getElementById('submitBtn').disabled = false;
+            }
+        }
+        
+        // Initialize when page loads
+        window.onload = async function() {
+            // Try to connect wallet automatically if available
+            if (window.ethereum) {
+                try {
+                    // Check if already connected
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if (accounts.length > 0) {
+                        await initWeb3();
+                    }
+                } catch (error) {
+                    console.log('Auto-connect failed:', error);
+                }
+            }
+        };
+        
+        // Listen for account changes
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', function (accounts) {
+                if (accounts.length > 0) {
+                    initWeb3();
+                } else {
+                    document.getElementById('walletAddress').textContent = 'Not Connected';
+                    document.getElementById('networkInfo').textContent = '';
+                    web3 = null;
+                    carbonChainContract = null;
+                    userAccount = null;
+                }
+            });
+            
+            window.ethereum.on('chainChanged', function (chainId) {
+                // Reload page on network change
+                window.location.reload();
+            });
+        }
+    </script>
+</body>
+</html>
