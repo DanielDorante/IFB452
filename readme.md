@@ -1,4 +1,5 @@
-##IFB452
+//file structure
+IFB452
 |
 |__CSS
 |  |
@@ -18,12 +19,12 @@
 |
 |__main.sol
 
-Requirement
+// Requirement
 - Remix
 - Metamask wallet
 - lite-server
 
-Working
+// Working
 - From the homepage, click on submit button to submit the env data. Allow the wallet access via metamask.
 - on successfull submission of data. You cannot view the data unless auditor validates the data.
 - To validate the submission, click on validate action button from submitdata page, or go back to homepage and login in to auditor validation button at the top right corner of homepage. Either option leads you to auditor login page. For the project the login details are open.. you can enter any login details or keep it blank also.., and enter login to get access to the validation page.
