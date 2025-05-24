@@ -1,23 +1,26 @@
 # File structure
 IFB452
 |
-|__CSS
+|_____CSS
 |  |
-|  |__style.css
+|  |_____style.css
 |
-|__pages
+|_____pages
 |  |
-|  |__auditorlogin.html
+|  |_____auditorlogin.html
 |  |
-|  |__senddata.html
+|  |_____senddata.html
 |  |
-|  |__validatedata.html
+|  |_____validatedata.html
 |  |
-|  |__viewdata.html
+|  |_____viewdata.html
 |
-|__index.html
+|_____index.html
 |
-|__main.sol
+|_____main.sol
+|
+|_____readme.md
+
 
 # Requirement
 - Remix
