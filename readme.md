@@ -1,4 +1,4 @@
-//file structure
+# File structure
 IFB452
 |
 |__CSS
@@ -19,14 +19,18 @@ IFB452
 |
 |__main.sol
 
-// Requirement
+# Requirement
 - Remix
 - Metamask wallet
 - lite-server
 
-// Working
+# Setup
+- Open remix web from chrome browser. Open the main.sol file in remix web. Compile the main.sol file. After compiling, select <Injected Provider - MetaMask> from the environment. Connect your metamask wallet. After that Deploy your contract, copy the contract address and ABI data in your html code.
+- once the setup is done open terminal from the parent directory and enter lite-server to run the lite webserver.
+
+# Working process
 - From the homepage, click on submit button to submit the env data. Allow the wallet access via metamask.
-- on successfull submission of data. You cannot view the data unless auditor validates the data.
+- on successfull submission of data. Data can be viewed only after auditor validates the data.
 - To validate the submission, click on validate action button from submitdata page, or go back to homepage and login in to auditor validation button at the top right corner of homepage. Either option leads you to auditor login page. For the project the login details are open.. you can enter any login details or keep it blank also.., and enter login to get access to the validation page.
 - upon entering the validation page, enter submission id(starts from 1 on your first submission of data and its incremental of second third forth, etc...) and click on load submission. This button will load the submission matched to the id to validate. If the data is already validated, the message will be shown that it is validated already.
 - Click on validate button and allow from metamask wallet to validate the submission. 
