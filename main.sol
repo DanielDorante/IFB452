@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+// Contract to record and validate environmental data submissions
 contract CarbonChain {
     address public owner;
 
+    // Data submission structure and impact score
     struct Submission {
         address company;
         string data;
-        int impactValue; // pos or neg
+        int impactValue; // Score either positive or negative
         bool validated;
         bool exists;
     }
-
     struct ImpactToken {
         int score;
         bool exists;
@@ -21,6 +22,7 @@ contract CarbonChain {
     mapping (uint => Submission) public submissions;
     mapping (address => ImpactToken) public impactTokens;
 
+    // Track activity on the blockchain though events
     event SubmissionCreated(uint id, address indexed company);
     event SubmissionValidated(uint id, bool valid, int impactValue);
     event ScoreUpdated(address indexed company, int newScore);
@@ -29,7 +31,7 @@ contract CarbonChain {
         owner = msg.sender;
     }
 
-    // companies submit environmental actions
+    // Companies submit environmental actions
     function submitEnvironmentalAction(string memory _data) public {
         submissionCount++;
         submissions[submissionCount] = Submission({
@@ -42,7 +44,7 @@ contract CarbonChain {
         emit SubmissionCreated(submissionCount, msg.sender);
     }
 
-    // validator assigns a pos or neg score to submission
+    // Validators to approve and assign a score to a submission
     function validateAction(uint _id, int _impactValue) public {
         require(submissions[_id].exists, "submission does not exist");
         require(!submissions[_id].validated, "already validated");
@@ -51,7 +53,7 @@ contract CarbonChain {
         s.validated = true;
         s.impactValue = _impactValue;
 
-        // update or create the token for company
+        // Update or create the token for company
         ImpactToken storage token = impactTokens[s.company];
         if (!token.exists) {
             impactTokens[s.company] = ImpactToken({
@@ -66,13 +68,13 @@ contract CarbonChain {
         emit ScoreUpdated(s.company, impactTokens[s.company].score);
     }
 
-    // public seeing company score
+    // Public function to check the total environmental score of a company
     function getCompanyScore(address _company) public view returns (int) {
         require(impactTokens[_company].exists, "NO score for this company");
         return impactTokens[_company].score;
     }
 
-    // view submission full info
+    // Function for the public to view a submission's detail by it's ID
     function viewSubmission(uint _id) public view returns (
         address company,
         string memory data,
