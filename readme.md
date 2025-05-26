@@ -22,44 +22,22 @@ IFB452
 |_____readme.md
 
 
-# Requirements
-- Remix IDE; for Solidity development & deployment
-- Metamask wallet; for Ethereum
+# Requirement
+- Remix
+- Metamask wallet
 - lite-server
 
 # Setup
+- Open remix web from chrome browser. Open the main.sol file in remix web. Compile the main.sol file. After compiling, select <Injected Provider - MetaMask> from the environment. Connect your metamask wallet. After that Deploy your contract, copy the contract address and ABI data in your html code.
+- once the setup is done open terminal from the parent directory and enter lite-server to run the lite webserver.
 
-**Complie and deploy smart contract**
-
-1. Open Remix IDE in browser such as Chrome.
-2. Open the main.sol file in Remix IDE.
-3. Compile the main.sol contract.
-4. In the Delpy and run transactions tab, select Injected Provider as the environment to connect Remix with MetaMask.
-5. Connect your MetaMask wallet when prompted.
-6. Deploy the contract.
-7. Copy the deployed contract's address and ABI, and paste it into the appropriate sections of your HTML files.
-  
-**Run the local web Server**
-
-1. Open a terminal from the parent project directory
-2. Run the command lite-server to run the lite webserver
-3. This will start a local server and open the app in your default browser.
-   
 # Working process
+- From the homepage, click on submit button to submit the env data. Allow the wallet access via metamask.
+- on successfull submission of data. Data can be viewed only after auditor validates the data.
+- To validate the submission, click on validate action button from submitdata page, or go back to homepage and login in to auditor validation button at the top right corner of homepage. Either option leads you to auditor login page. For the project the login details are open.. you can enter any login details or keep it blank also.., and enter login to get access to the validation page.
+- upon entering the validation page, enter submission id(starts from 1 on your first submission of data and its incremental of second third forth, etc...) and click on load submission. This button will load the submission matched to the id to validate. If the data is already validated, the message will be shown that it is validated already.
+- Click on validate button and allow from metamask wallet to validate the submission. 
+- Finally to view submission and check score, go to view score and submissions button. From this page you can enter the submission id to view the submitted data and for the score you can enter the wallet address.
 
-**Submitting Environmental Data**
-1. From the homepade (index.html), click the Submit button to submitte senvironmental data. MetaMask will prompt you to allow wallet access and confirm the transaction.
-2. On successful submission, the data will be stored on the blockchain but will only be visible after the auditor validation.
-   
-**Auditor Validation**
-1. To validate the submission, click the Validate Action button on the submit data page, or use the Auditor Validation button at the top right corner of the homepage. Both optons lead to the auditor login page.
-2. For this project the login details are open. You can enter any login details or leave it blank and click Login to get access to the validation page.
-3. On the validation page, enter the Submission ID which is starting from 1 for the first submission and gets incremented by 1 for each subsequent submission.
-4. Click Load Submission to retrieve the submission details. This button will load the submission matched to the id to validate. If the submission is already validated, the message will be shown that it is validated already. Otherwise, click If the data is already validated, the message will be shown that it is validated already.alidate button and confirm the transaction via MetaMask to validate the submission.
-   
-**Viewing Submissions and Scores**
-1. Navigate to the View Scores and Submissions page via the View Score and Submissions button.
-2. On this page, you can enter the submission id to view the submitted data and to check the score, you can enter the wallet address. The page will display the relevant data and scores accordingly.
-
-# Notes
-- Make sure MetaMask is connected to the same network as your deployed contract
+# Github repo: 
+https://github.com/DanielDorante/IFB452.git
